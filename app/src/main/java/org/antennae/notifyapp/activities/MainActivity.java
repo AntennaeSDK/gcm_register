@@ -21,7 +21,7 @@ import org.antennae.notifyapp.events.EventManager;
 import org.antennae.notifyapp.model.Alert;
 import org.antennae.notifyapp.model.AlertSeverityEnum;
 import org.antennae.android.common.gcm.GcmWrapper;
-import org.antennea.notifyapp.listeners.AlertReceivedListener;
+import org.antennae.notifyapp.listeners.AlertReceivedListener;
 
 import java.util.ArrayList;
 import java.util.List;

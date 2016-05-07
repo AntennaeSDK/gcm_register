@@ -1,4 +1,4 @@
-package org.antennea.notifyapp.services;
+package org.antennae.notifyapp.services;
 
 import android.app.IntentService;
 import android.content.Intent;

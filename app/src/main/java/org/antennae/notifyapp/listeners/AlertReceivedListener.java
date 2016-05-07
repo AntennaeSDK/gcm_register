@@ -1,4 +1,4 @@
-package org.antennea.notifyapp.listeners;
+package org.antennae.notifyapp.listeners;
 
 import org.antennae.notifyapp.model.Alert;
 

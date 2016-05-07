@@ -73,5 +73,4 @@ public class GcmWrapper {
         GcmRegistrationTask registerTask = new GcmRegistrationTask(googleCloudMessaging, antennaeContext, Constants.PROJECT_ID);
         registerTask.execute();
     }
-
 }

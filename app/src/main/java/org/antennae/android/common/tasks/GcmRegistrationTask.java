@@ -10,7 +10,6 @@ import android.util.Log;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 import org.antennae.android.common.AntennaeContext;
-import org.antennae.android.common.tasks.AntenneaServerRegistrationTask;
 import org.antennae.android.common.transport.DeviceInfo;
 
 import org.antennae.android.common.transport.AppDetails;
@@ -59,8 +58,8 @@ public class GcmRegistrationTask extends AsyncTask {
 
             Log.i(Globals.TAG, "AppDetails " + appDetails.toJson());
 
-            AntenneaServerRegistrationTask antenneaServerRegistrationTask = new AntenneaServerRegistrationTask("http://192.168.1.160:8080/api/registration", appDetails);
-            antenneaServerRegistrationTask.execute();
+            AntennaeServerRegistrationTask antennaeServerRegistrationTask = new AntennaeServerRegistrationTask("http://192.168.1.160:8080/api/registration", appDetails);
+            antennaeServerRegistrationTask.execute();
 
         } catch (IOException e) {
             e.printStackTrace();

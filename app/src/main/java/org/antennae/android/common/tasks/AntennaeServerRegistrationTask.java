@@ -18,12 +18,12 @@ import java.io.UnsupportedEncodingException;
 /**
  * Created by nambi sankaran on 6/23/15.
  */
-public class AntenneaServerRegistrationTask extends AsyncTask {
+public class AntennaeServerRegistrationTask extends AsyncTask {
 
     String serverUrl;
     AppDetails appDetails;
 
-    public AntenneaServerRegistrationTask( String serverUrl, AppDetails appDetails ){
+    public AntennaeServerRegistrationTask(String serverUrl, AppDetails appDetails){
         this.serverUrl = serverUrl;
         this.appDetails = appDetails;
     }

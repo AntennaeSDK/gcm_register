@@ -8,7 +8,7 @@ import android.support.v4.content.WakefulBroadcastReceiver;
 import android.util.Log;
 
 import org.antennae.notifyapp.constants.Globals;
-import org.antennea.notifyapp.services.GcmIntentService;
+import org.antennae.notifyapp.services.GcmIntentService;
 
 public class GcmBroadcastReceiver extends WakefulBroadcastReceiver {
 

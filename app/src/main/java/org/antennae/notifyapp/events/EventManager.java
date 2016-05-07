@@ -1,7 +1,7 @@
 package org.antennae.notifyapp.events;
 
 import org.antennae.notifyapp.model.Alert;
-import org.antennea.notifyapp.listeners.AlertReceivedListener;
+import org.antennae.notifyapp.listeners.AlertReceivedListener;
 
 import java.util.ArrayList;
 import java.util.List;

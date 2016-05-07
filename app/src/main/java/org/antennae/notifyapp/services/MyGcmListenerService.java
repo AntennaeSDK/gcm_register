@@ -1,4 +1,4 @@
-package org.antennea.notifyapp.services;
+package org.antennae.notifyapp.services;
 
 import android.os.Bundle;
 import android.util.Log;
