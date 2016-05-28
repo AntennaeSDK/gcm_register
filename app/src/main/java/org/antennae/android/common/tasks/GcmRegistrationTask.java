@@ -21,6 +21,7 @@ import java.io.IOException;
 /**
  * Backgroud Async Task to register with GCM and Save the registrationId
  */
+@Deprecated
 public class GcmRegistrationTask extends AsyncTask {
 
     private GoogleCloudMessaging gcm;
@@ -42,6 +43,7 @@ public class GcmRegistrationTask extends AsyncTask {
             // register the app with GCM
             regId = gcm.register( projectId );
 
+
             // save the registrationId locally
             antennaeContext.saveRegistrationId(regId);
 
@@ -58,8 +60,8 @@ public class GcmRegistrationTask extends AsyncTask {
 
             Log.i(Globals.TAG, "AppDetails " + appDetails.toJson());
 
-            AntennaeServerRegistrationTask antennaeServerRegistrationTask = new AntennaeServerRegistrationTask("http://192.168.1.160:8080/api/registration", appDetails);
-            antennaeServerRegistrationTask.execute();
+            //AntennaeServerRegistrationTask antennaeServerRegistrationTask = new AntennaeServerRegistrationTask("http://192.168.1.160:8080/api/registration", appDetails);
+            //antennaeServerRegistrationTask.execute();
 
         } catch (IOException e) {
             e.printStackTrace();

@@ -51,16 +51,7 @@ public class GcmWrapper {
 
         if( antennaeContext.isRegistered() ){
             registrationId = antennaeContext.getRegistrationId();
-        }/*else{
-            // kickoff registrationId refresh in the background.
-            registerWithGcmAsync();
-            return registrationId;
         }
-
-        if( antennaeContext.isNewRegistrationIdNeeded() ){
-            // kickoff registrationId refresh in the background
-            registerWithGcmAsync();
-        }*/
 
         return registrationId;
     }

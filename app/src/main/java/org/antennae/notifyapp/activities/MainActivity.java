@@ -1,8 +1,13 @@
 package org.antennae.notifyapp.activities;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -10,10 +15,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 
+import org.antennae.android.common.gcm.RegistrationIntentService;
 import org.antennae.notifyapp.adapters.AlertAdapter;
 import org.antennae.gcmtests.gcmtest.R;
 import org.antennae.notifyapp.constants.Globals;
@@ -37,6 +45,9 @@ public class MainActivity extends ActionBarActivity implements AlertReceivedList
     public static final String ALERT_PARAM = "alert";
     public static final String ALERT_NOTIFICATION_INTENT_FILTER = "ALERT_NOTIFICATION_INTENT_FILTER";
 
+    private BroadcastReceiver mRegistrationBroadcastReceiver;
+    private boolean isReceiverRegistered;
+
     ListView lvMessages;
     private List<Alert> alerts = new ArrayList<Alert>();
     private AlertAdapter alertsAdapter;
@@ -57,12 +68,42 @@ public class MainActivity extends ActionBarActivity implements AlertReceivedList
         context = getApplicationContext();
         context.getSharedPreferences("ANTENNAE", MODE_PRIVATE);
 
+        mRegistrationBroadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+
+                //mRegistrationProgressBar.setVisibility(ProgressBar.GONE);
+
+                SharedPreferences sharedPreferences =
+                        PreferenceManager.getDefaultSharedPreferences(context);
+
+                boolean sentToken = sharedPreferences.getBoolean(Globals.SENT_TOKEN_TO_SERVER, false);
+
+                if (sentToken) {
+                    //mInformationTextView.setText(getString(R.string.gcm_send_message));
+                } else {
+                    //mInformationTextView.setText(getString(R.string.token_error_message));
+                }
+            }
+        };
+
+        // Registering BroadcastReceiver
+        registerReceiver();
+
+        if( checkPlayServices() ){
+            // Start IntentService to register this application with GCM.
+            Intent intent = new Intent(this, RegistrationIntentService.class);
+            startService( intent );
+        }
+
+        /*
         GcmWrapper gcmwrapper = new GcmWrapper(context);
         String registrationId = gcmwrapper.getRegistrationId();
 
         if( registrationId == null ){
             gcmwrapper.registerWithGcmAsync();
         }
+        */
 
         setContentView(R.layout.activity_main);
 
@@ -91,7 +132,7 @@ public class MainActivity extends ActionBarActivity implements AlertReceivedList
         Alert alert1 = new Alert("High I/O on ADP Apps", "ADP backend has abnormally high IO", AlertSeverityEnum.HIGH.toString(), "Join the bridge on 1-873-555-3846 #556");
         Alert alert2 = new Alert("MySQL index issue", "MySql index is slower on quote system", AlertSeverityEnum.SEVERE.toString(), "Join the bridge on 1-873-555-3846 #598");
 
-        alerts.add( alert1 );
+        alerts.add(alert1);
         alerts.add( alert2 );
 
         alertsAdapter = new AlertAdapter(this, alerts);
@@ -130,18 +171,36 @@ public class MainActivity extends ActionBarActivity implements AlertReceivedList
      * the Google Play Store or enable it in the device's system settings.
      */
     private boolean checkPlayServices() {
-        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
-        if (resultCode != ConnectionResult.SUCCESS) {
-            if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
-                GooglePlayServicesUtil.getErrorDialog(resultCode, this,
-                        PLAY_SERVICES_RESOLUTION_REQUEST).show();
-            } else {
+
+//        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+//        if (resultCode != ConnectionResult.SUCCESS) {
+//            if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
+//                GooglePlayServicesUtil.getErrorDialog(resultCode, this,
+//                        PLAY_SERVICES_RESOLUTION_REQUEST).show();
+//            } else {
+//                Log.i(Globals.TAG, "This device is not supported.");
+//                finish();
+//            }
+//            return false;
+//        }
+
+        boolean result = false;
+
+        GoogleApiAvailability googleAPI = GoogleApiAvailability.getInstance();
+        int resultCode = googleAPI.isGooglePlayServicesAvailable(this);
+
+        if( resultCode != ConnectionResult.SUCCESS ){
+            if( googleAPI.isUserResolvableError(resultCode) ){
+                googleAPI.getErrorDialog(this, resultCode, PLAY_SERVICES_RESOLUTION_REQUEST).show();
+            }else{
                 Log.i(Globals.TAG, "This device is not supported.");
                 finish();
             }
-            return false;
+        }else{
+            result = true;
         }
-        return true;
+
+        return result;
     }
 
     @Override
@@ -163,4 +222,20 @@ public class MainActivity extends ActionBarActivity implements AlertReceivedList
             });
         }
     }
+
+    @Override
+    protected void onPause() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mRegistrationBroadcastReceiver);
+        isReceiverRegistered = false;
+        super.onPause();
+    }
+
+    private void registerReceiver(){
+        if(!isReceiverRegistered) {
+            LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
+                    new IntentFilter(Globals.REGISTRATION_COMPLETE));
+            isReceiverRegistered = true;
+        }
+    }
 }
+

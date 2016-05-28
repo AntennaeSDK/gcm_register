@@ -23,9 +23,9 @@ public class Constants {
 
     // these constants are specific to application.
     // TODO: move these to a configuration file, so that they can be easily changed
-    public static final String PREFS_NAME = "GCM_DEMO";
-    public static final String PREFS_PROPERTY_REG_ID = "registration_id";
-    public static final String PROJECT_ID = "549760952886";
+//    public static final String PREFS_NAME = "GCM_DEMO";
+//    public static final String PREFS_PROPERTY_REG_ID = "registration_id";
+//    public static final String PROJECT_ID = "549760952886";
 
 
     // these constants are meant for the framework

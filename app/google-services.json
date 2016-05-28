@@ -1,51 +1,61 @@
 {
   "project_info": {
-    "project_id": "notifytest-963",
     "project_number": "549760952886",
-    "name": "NotifyTest"
+    "project_id": "notifytest-963"
   },
   "client": [
     {
       "client_info": {
-        "client_id": "android:org.antennae.notifytest",
-        "client_type": 1,
-        "android_client_info": {"package_name": "org.antennae.notifytest"}
+        "mobilesdk_app_id": "1:549760952886:android:be874475e22ea265",
+        "android_client_info": {
+          "package_name": "org.antennae.notifytest"
+        }
       },
       "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAiHayHqDbxBQCa2_4t8IKJ_7JBJZfI6jc"
+        }
+      ],
       "services": {
-        "analytics_service": {"status": 1},
-        "cloud_messaging_service": {
-          "status": 2,
-          "apns_config": []
+        "analytics_service": {
+          "status": 1
         },
         "appinvite_service": {
           "status": 1,
           "other_platform_oauth_client": []
         },
-        "google_signin_service": {"status": 1},
-        "ads_service": {"status": 1}
+        "ads_service": {
+          "status": 1
+        }
       }
     },
     {
       "client_info": {
-        "client_id": "android:org.antennae.gcmtests.gcmtest",
-        "client_type": 1,
-        "android_client_info": {"package_name": "org.antennae.gcmtests.gcmtest"}
+        "mobilesdk_app_id": "1:549760952886:android:f70dbf862f3d4e44",
+        "android_client_info": {
+          "package_name": "org.antennae.gcmtests.gcmtest"
+        }
       },
       "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAiHayHqDbxBQCa2_4t8IKJ_7JBJZfI6jc"
+        }
+      ],
       "services": {
-        "analytics_service": {"status": 1},
-        "cloud_messaging_service": {
-          "status": 2,
-          "apns_config": []
+        "analytics_service": {
+          "status": 1
         },
         "appinvite_service": {
           "status": 1,
           "other_platform_oauth_client": []
         },
-        "google_signin_service": {"status": 1},
-        "ads_service": {"status": 1}
+        "ads_service": {
+          "status": 1
+        }
       }
     }
-  ]
+  ],
+  "configuration_version": "1"
 }
