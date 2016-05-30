@@ -19,6 +19,7 @@ import android.widget.ListView;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 
+import org.antennae.android.common.AntennaeContext;
 import org.antennae.android.common.Constants;
 import org.antennae.android.common.gcm.RegistrationIntentService;
 import org.antennae.notifyapp.adapters.AlertAdapter;
@@ -92,6 +93,16 @@ public class MainActivity extends ActionBarActivity implements AlertReceivedList
         registerReceiver();
 
         if( checkPlayServices() ){
+
+            // get the server details and store it in the PREFS
+            AntennaeContext antennaeContext = new AntennaeContext(this);
+            SharedPreferences.Editor editor = antennaeContext.getPreferences().edit();
+
+            editor.putString(Constants.DEFAULT_SERVER_HOST_VALUE, String.valueOf(R.string.ANTENNAE_SERVER_HOST));
+            editor.putInt(Constants.DEFAULT_SERVER_PORT_NAME, R.integer.ANTENNAE_SERVER_PORT);
+            editor.putString(Constants.DEFAULT_SERVER_PROTOCOL_VALUE, String.valueOf(R.string.ANTENNAE_SERVER_PROTOCOL));
+            editor.apply();
+
             // Start IntentService to register this application with GCM.
             Intent intent = new Intent(this, RegistrationIntentService.class);
             startService( intent );

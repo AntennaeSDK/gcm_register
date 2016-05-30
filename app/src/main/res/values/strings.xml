@@ -4,4 +4,8 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_message_detail">MessageDetailActivity</string>
+
+    <string name="ANTENNAE_SERVER_HOST">antennae.org</string>
+    <string name="ANTENNAE_SERVER_PROTOCOL">https</string>
+    <integer name="ANTENNAE_SERVER_PORT">8080</integer>
 </resources>

@@ -49,7 +49,7 @@ public class AntennaeContext {
         this.preferences = context.getSharedPreferences(Constants.PREF_ANTENNAE, Context.MODE_PRIVATE);
     }
 
-    protected SharedPreferences getPreferences(){
+    public SharedPreferences getPreferences(){
         return preferences;
     }
 
@@ -196,12 +196,13 @@ public class AntennaeContext {
 
         // the call the API to send the token
         AppDetails appDetails = getAppDetails();
-        sendAppDetailsToServer(Constants.DEFAULT_SERVER_IP, Constants.DEFAULT_SERVER_PORT, appDetails);
+        getPreferences().getString(Constants.DEFAULT_SERVER_PROTOCOL_VALUE, Constants.DEFAULT_SERVER_PROTOCOL_VALUE);
+        sendAppDetailsToServer(Constants.DEFAULT_SERVER_PROTOCOL_VALUE, Constants.DEFAULT_SERVER_HOST_VALUE, Constants.DEFAULT_SERVER_PORT_VALUE, appDetails);
     }
 
-    public void sendAppDetailsToServer(String host, int port, AppDetails appDetails){
+    public void sendAppDetailsToServer(String protocol, String host, int port, AppDetails appDetails){
 
-        String serverUrl = "http://" + host + ":" + port + Constants.SERVER_REGISTRATION_URL;
+        String serverUrl =  protocol + "://" + host + ":" + port + Constants.SERVER_REGISTRATION_URL;
 
         try {
 

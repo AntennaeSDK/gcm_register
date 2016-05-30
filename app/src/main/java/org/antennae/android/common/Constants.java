@@ -39,7 +39,16 @@ public class Constants {
     public static final String REGISTRATION_COMPLETE = "REGISTRATION_COMPLETE";
 
     public static final String SERVER_REGISTRATION_URL ="/api/registration";
-    public static final String DEFAULT_SERVER_IP = "192.168.1.4";
-    public static final int    DEFAULT_SERVER_PORT = 8080;
+
+
+    public static final String DEFAULT_SERVER_HOST_NAME = "DEFAULT_SERVER_HOST_VALUE";
+    public static final String DEFAULT_SERVER_HOST_VALUE = "antennae.org";
+
+    public static final String DEFAULT_SERVER_PROTOCOL_NAME = "DEFAULT_SERVER_PROTOCOL_VALUE";
+    public static final String DEFAULT_SERVER_PROTOCOL_VALUE = "https";
+
+    public static final String DEFAULT_SERVER_PORT_NAME = "DEFAULT_SERVER_PORT";
+    public static final int DEFAULT_SERVER_PORT_VALUE = 8080;
+
 
 }
