@@ -45,7 +45,7 @@ public class GcmRegistrationTask extends AsyncTask {
 
 
             // save the registrationId locally
-            antennaeContext.saveRegistrationIdAndAppVersion(regId);
+            antennaeContext.saveGCMRegistrationIdAndAppVersion(regId);
 
             // retrieve the device information
             DeviceInfo deviceInfo = antennaeContext.getDeviceInfo();

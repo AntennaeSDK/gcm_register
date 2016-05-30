@@ -20,8 +20,6 @@ import android.content.Context;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 import org.antennae.android.common.AntennaeContext;
-import org.antennae.android.common.Constants;
-import org.antennae.android.common.tasks.GcmRegistrationTask;
 
 public class GcmWrapper {
 
@@ -50,7 +48,7 @@ public class GcmWrapper {
         String registrationId=null;
 
         if( antennaeContext.isRegistered() ){
-            registrationId = antennaeContext.getRegistrationId();
+            registrationId = antennaeContext.getGcmTokenId();
         }
 
         return registrationId;

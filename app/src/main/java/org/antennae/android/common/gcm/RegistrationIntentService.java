@@ -35,16 +35,18 @@ public class RegistrationIntentService extends IntentService {
     protected void onHandleIntent(Intent intent) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-
         if( antennaeContext == null ){
             antennaeContext = new AntennaeContext(getApplicationContext());
         }
 
-        if( !antennaeContext.isNewTokenNeeded() ){
-            // nothing to do.
-            // we have a token and a new token is not necessary
-            // TODO: handle the case, when the server sends request for token refresh
-            return;
+        boolean getTokenFlag = false;
+
+        // figure out whether a new token needs to be fetched
+        if( !antennaeContext.isRegistered() ){
+            getTokenFlag =true;
+        }
+        if( intent.getBooleanExtra(Constants.GCM_TOKEN_REFRESH, false)){
+            getTokenFlag= true;
         }
 
         try {
@@ -55,17 +57,34 @@ public class RegistrationIntentService extends IntentService {
             // R.string.gcm_defaultSenderId (the Sender ID) is typically derived from google-services.json.
             // See https://developers.google.com/cloud-messaging/android/start for details on this file.
 
+            String token = null;
 
             // [START get_token]
-            InstanceID instanceID = InstanceID.getInstance(this);
-            String token = instanceID.getToken(getString(R.string.gcm_defaultSenderId),
-                    GoogleCloudMessaging.INSTANCE_ID_SCOPE, null);
+
+            if( getTokenFlag == true ) {
+                InstanceID instanceID = InstanceID.getInstance(this);
+                token = instanceID.getToken(getString(R.string.gcm_defaultSenderId),
+                        GoogleCloudMessaging.INSTANCE_ID_SCOPE, null);
+
+                Log.i(TAG, "GCM Registration Token: " + token);
+
+                saveGcmRegistrationToken(token);
+
+                sendRegistrationToServer(token);
+
+            }else{
+
+                token = antennaeContext.getGcmTokenId();
+                Log.i(TAG, "GCM Registration Token: " + token);
+
+                if ( !antennaeContext.isAppDetailsSentToServer() ){
+                    antennaeContext.sendAppDetailsToServer();
+                }
+            }
             // [END get_token]
 
-            Log.i(TAG, "GCM Registration Token: " + token);
 
-            // TODO: Implement this method to send any registration to your app's servers.
-            sendRegistrationToServer(token);
+
 
             // Subscribe to topic channels
             subscribeTopics(token);
@@ -73,7 +92,7 @@ public class RegistrationIntentService extends IntentService {
             // You should store a boolean that indicates whether the generated token has been
             // sent to your server. If the boolean is false, send the token to your server,
             // otherwise your server should have already received the token.
-            sharedPreferences.edit().putBoolean(Constants.SENT_APP_DETAILS_TO_SERVER, true).apply();
+            // sharedPreferences.edit().putBoolean(Constants.SENT_APP_DETAILS_TO_SERVER, true).apply();
             // [END register_for_gcm]
 
         } catch (Exception e) {
@@ -82,11 +101,16 @@ public class RegistrationIntentService extends IntentService {
             // on a third-party server, this ensures that we'll attempt the update at a later time.
             sharedPreferences.edit().putBoolean(Constants.SENT_APP_DETAILS_TO_SERVER, false).apply();
         }
+
         // Notify UI that registration has completed, so the progress indicator can be hidden.
         Intent registrationComplete = new Intent(Constants.REGISTRATION_COMPLETE);
         LocalBroadcastManager.getInstance(this).sendBroadcast(registrationComplete);
     }
 
+    private void saveGcmRegistrationToken( String token ){
+        // save the token in local preferences
+        antennaeContext.saveGCMRegistrationIdAndAppVersion(token);
+    }
     /**
      * Persist registration to third-party servers.
      *
@@ -96,9 +120,6 @@ public class RegistrationIntentService extends IntentService {
      * @param token The new token.
      */
     private void sendRegistrationToServer(String token) {
-
-        // save the token in local preferences
-        antennaeContext.saveRegistrationIdAndAppVersion(token);
 
         // save the token in the remote server
         antennaeContext.sendAppDetailsToServer();

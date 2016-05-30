@@ -99,7 +99,7 @@ public class MainActivity extends ActionBarActivity implements AlertReceivedList
 
         /*
         GcmWrapper gcmwrapper = new GcmWrapper(context);
-        String registrationId = gcmwrapper.getRegistrationId();
+        String registrationId = gcmwrapper.getGcmTokenId();
 
         if( registrationId == null ){
             gcmwrapper.registerWithGcmAsync();

@@ -34,6 +34,7 @@ public class Constants {
     public static final String ANTENNAE_REGISTRATION_ID = "ANT_REGISTER_ID";
     public static final String ANTENNAE_APP_VERSION = "ANT_APP_VERSION";
 
+    public static final String GCM_TOKEN_REFRESH = "GCM_TOKEN_REFRESH";
     public static final String SENT_APP_DETAILS_TO_SERVER = "SENT_APP_DETAILS_TO_SERVER";
     public static final String REGISTRATION_COMPLETE = "REGISTRATION_COMPLETE";
 

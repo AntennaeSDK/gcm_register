@@ -56,7 +56,7 @@ public class AntennaeContext {
     /**
         Save registrationId from GCM and appVersion in Shared-Preferences
      */
-    public void saveRegistrationIdAndAppVersion(String registrationId){
+    public void saveGCMRegistrationIdAndAppVersion(String registrationId){
 
         if( registrationId == null || registrationId.trim().equals("")){
             throw new NullPointerException("registrationId cannot be null or empty");
@@ -89,7 +89,7 @@ public class AntennaeContext {
         return result;
     }
 
-    public String getRegistrationId(){
+    public String getGcmTokenId(){
         String result=null;
         if( isRegistered() ){
             result = getPreferences().getString(Constants.ANTENNAE_REGISTRATION_ID,null);
@@ -100,6 +100,9 @@ public class AntennaeContext {
 
     public AppDetails getAppDetails(){
         AppDetails appDetails = new AppDetails();
+
+        appDetails.setAppInfo(getAppInfo());
+        appDetails.setDeviceInfo( getDeviceInfo());
 
         return appDetails;
     }
@@ -198,7 +201,7 @@ public class AntennaeContext {
 
     public void sendAppDetailsToServer(String host, int port, AppDetails appDetails){
 
-        String serverUrl = "http://" + host + ":" + port + "";
+        String serverUrl = "http://" + host + ":" + port + Constants.SERVER_REGISTRATION_URL;
 
         try {
 
@@ -217,12 +220,14 @@ public class AntennaeContext {
 
             if(response.getStatusLine().getStatusCode() == 200 ){
                 // mark that the application details are sent to server
-                getPreferences().edit().putBoolean(Constants.SENT_APP_DETAILS_TO_SERVER, true);
-                getPreferences().edit().apply();
+                SharedPreferences.Editor editor = getPreferences().edit();
+                editor.putBoolean(Constants.SENT_APP_DETAILS_TO_SERVER, true);
+                editor.apply();
             }else{
                 // mark, so, that app retries again to the send the details to the server
-                getPreferences().edit().putBoolean(Constants.SENT_APP_DETAILS_TO_SERVER, false);
-                getPreferences().edit().apply();
+                SharedPreferences.Editor editor = getPreferences().edit();
+                editor.putBoolean(Constants.SENT_APP_DETAILS_TO_SERVER, false);
+                editor.apply();
             }
 
         } catch (UnsupportedEncodingException e) {
