@@ -38,7 +38,7 @@ public class Constants {
     public static final String REGISTRATION_COMPLETE = "REGISTRATION_COMPLETE";
 
     public static final String SERVER_REGISTRATION_URL ="/api/registration";
-    public static final String DEFAULT_SERVER_IP = "localhost";
+    public static final String DEFAULT_SERVER_IP = "192.168.1.4";
     public static final int    DEFAULT_SERVER_PORT = 8080;
 
 }

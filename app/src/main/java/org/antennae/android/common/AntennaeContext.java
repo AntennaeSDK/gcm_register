@@ -189,14 +189,16 @@ public class AntennaeContext {
 
 
     public void sendAppDetailsToServer() {
-        // get the ip address and port of the server from a config file
+        // TODO: get the ip address and port of the server from a config file
 
         // the call the API to send the token
+        AppDetails appDetails = getAppDetails();
+        sendAppDetailsToServer(Constants.DEFAULT_SERVER_IP, Constants.DEFAULT_SERVER_PORT, appDetails);
     }
 
     public void sendAppDetailsToServer(String host, int port, AppDetails appDetails){
 
-        String serverUrl = host + ":" + port + "";
+        String serverUrl = "http://" + host + ":" + port + "";
 
         try {
 

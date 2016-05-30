@@ -28,22 +28,26 @@ public class RegistrationIntentService extends IntentService {
 
     public RegistrationIntentService() {
         super(TAG);
-        antennaeContext = new AntennaeContext( getApplicationContext());
+        //antennaeContext = new AntennaeContext( getApplicationContext());
     }
 
     @Override
     protected void onHandleIntent(Intent intent) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
+
+        if( antennaeContext == null ){
+            antennaeContext = new AntennaeContext(getApplicationContext());
+        }
+
+        if( !antennaeContext.isNewTokenNeeded() ){
+            // nothing to do.
+            // we have a token and a new token is not necessary
+            // TODO: handle the case, when the server sends request for token refresh
+            return;
+        }
+
         try {
-
-            if( !antennaeContext.isNewTokenNeeded() ){
-                // nothing to do.
-                // we have a token and a new token is not necessary
-                // TODO: handle the case, when the server sends request for token refresh
-                return;
-            }
-
 
             // [START register_for_gcm]
             // Initially this call goes out to the network to retrieve the token, subsequent calls
