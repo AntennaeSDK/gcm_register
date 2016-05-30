@@ -29,8 +29,16 @@ public class Constants {
 
 
     // these constants are meant for the framework
-    // these can be common for all antennea application
-    public static final String PREF_ANTENNAE = "PREF_ANTENNAE";
+    // these can be common for all antennae application
+    public static final String PREF_ANTENNAE = "ANTENNAE";
     public static final String ANTENNAE_REGISTRATION_ID = "ANT_REGISTER_ID";
     public static final String ANTENNAE_APP_VERSION = "ANT_APP_VERSION";
+
+    public static final String SENT_APP_DETAILS_TO_SERVER = "SENT_APP_DETAILS_TO_SERVER";
+    public static final String REGISTRATION_COMPLETE = "REGISTRATION_COMPLETE";
+
+    public static final String SERVER_REGISTRATION_URL ="/api/registration";
+    public static final String DEFAULT_SERVER_IP = "localhost";
+    public static final int    DEFAULT_SERVER_PORT = 8080;
+
 }

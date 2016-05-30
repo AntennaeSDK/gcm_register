@@ -22,13 +22,6 @@ public class AppDetails {
         this.appInfo = appInfo;
     }
 
-//    public String getGcmRegistrationId() {
-//        return gcmRegistrationId;
-//    }
-//
-//    public void setGcmRegistrationId(String gcmRegistrationId) {
-//        this.gcmRegistrationId = gcmRegistrationId;
-//    }
 
     public DeviceInfo getDeviceInfo() {
         return deviceInfo;

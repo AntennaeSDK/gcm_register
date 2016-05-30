@@ -15,12 +15,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.common.GooglePlayServicesUtil;
 
+import org.antennae.android.common.Constants;
 import org.antennae.android.common.gcm.RegistrationIntentService;
 import org.antennae.notifyapp.adapters.AlertAdapter;
 import org.antennae.gcmtests.gcmtest.R;
@@ -28,7 +27,6 @@ import org.antennae.notifyapp.constants.Globals;
 import org.antennae.notifyapp.events.EventManager;
 import org.antennae.notifyapp.model.Alert;
 import org.antennae.notifyapp.model.AlertSeverityEnum;
-import org.antennae.android.common.gcm.GcmWrapper;
 import org.antennae.notifyapp.listeners.AlertReceivedListener;
 
 import java.util.ArrayList;
@@ -65,8 +63,9 @@ public class MainActivity extends ActionBarActivity implements AlertReceivedList
         EventManager eventManager = EventManager.getInstance();
         eventManager.registerAlertReceivedListener(this);
 
-        context = getApplicationContext();
-        context.getSharedPreferences("ANTENNAE", MODE_PRIVATE);
+//        context = getApplicationContext();
+//        SharedPreferences pref= context.getSharedPreferences( Constants.PREF_ANTENNAE , MODE_PRIVATE);
+
 
         mRegistrationBroadcastReceiver = new BroadcastReceiver() {
             @Override
@@ -77,7 +76,9 @@ public class MainActivity extends ActionBarActivity implements AlertReceivedList
                 SharedPreferences sharedPreferences =
                         PreferenceManager.getDefaultSharedPreferences(context);
 
-                boolean sentToken = sharedPreferences.getBoolean(Globals.SENT_TOKEN_TO_SERVER, false);
+                Log.i("BroadcastReceiver", "onReceive()");
+
+                boolean sentToken = sharedPreferences.getBoolean(Constants.SENT_APP_DETAILS_TO_SERVER, false);
 
                 if (sentToken) {
                     //mInformationTextView.setText(getString(R.string.gcm_send_message));
@@ -172,18 +173,6 @@ public class MainActivity extends ActionBarActivity implements AlertReceivedList
      */
     private boolean checkPlayServices() {
 
-//        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
-//        if (resultCode != ConnectionResult.SUCCESS) {
-//            if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
-//                GooglePlayServicesUtil.getErrorDialog(resultCode, this,
-//                        PLAY_SERVICES_RESOLUTION_REQUEST).show();
-//            } else {
-//                Log.i(Globals.TAG, "This device is not supported.");
-//                finish();
-//            }
-//            return false;
-//        }
-
         boolean result = false;
 
         GoogleApiAvailability googleAPI = GoogleApiAvailability.getInstance();
@@ -233,7 +222,7 @@ public class MainActivity extends ActionBarActivity implements AlertReceivedList
     private void registerReceiver(){
         if(!isReceiverRegistered) {
             LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
-                    new IntentFilter(Globals.REGISTRATION_COMPLETE));
+                    new IntentFilter(Constants.REGISTRATION_COMPLETE));
             isReceiverRegistered = true;
         }
     }

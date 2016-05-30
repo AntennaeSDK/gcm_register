@@ -61,7 +61,7 @@ public class GcmWrapper {
         Register with GCM in the background.
      */
     public void registerWithGcmAsync(){
-        GcmRegistrationTask registerTask = new GcmRegistrationTask(googleCloudMessaging, antennaeContext, Constants.PROJECT_ID);
-        registerTask.execute();
+        //GcmRegistrationTask registerTask = new GcmRegistrationTask(googleCloudMessaging, antennaeContext, Constants.PROJECT_ID);
+        //registerTask.execute();
     }
 }

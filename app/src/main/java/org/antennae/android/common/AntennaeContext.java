@@ -19,12 +19,22 @@ package org.antennae.android.common;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 
 import org.antennae.android.common.transport.AppDetails;
 import org.antennae.android.common.transport.AppInfo;
 import org.antennae.android.common.transport.DeviceInfo;
 import org.antennae.android.common.transport.PhoneTypeEnum;
 import org.antennae.android.common.utils.AppUtils;
+import org.antennae.notifyapp.constants.Globals;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
+
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 
 /**
  * Created by nambi sankaran on 6/16/15.
@@ -36,17 +46,17 @@ public class AntennaeContext {
 
     public AntennaeContext(Context context){
         this.context = context;
-        this.preferences = context.getSharedPreferences(Constants.PREF_ANTENNAE,Context.MODE_PRIVATE);
+        this.preferences = context.getSharedPreferences(Constants.PREF_ANTENNAE, Context.MODE_PRIVATE);
     }
 
     protected SharedPreferences getPreferences(){
         return preferences;
     }
 
-    /*
-        Save registrationId from GCM and appVersion in Shared-Prefrences
+    /**
+        Save registrationId from GCM and appVersion in Shared-Preferences
      */
-    public void saveRegistrationId( String registrationId ){
+    public void saveRegistrationIdAndAppVersion(String registrationId){
 
         if( registrationId == null || registrationId.trim().equals("")){
             throw new NullPointerException("registrationId cannot be null or empty");
@@ -59,6 +69,14 @@ public class AntennaeContext {
         // save appVersion
         int appVersion = AppUtils.getAppVersionFromApk(context);
         saveAppVersion(appVersion);
+    }
+
+    public boolean isNewTokenNeeded(){
+        boolean result = false;
+        if( !isRegistered() || isNewRegistrationIdNeeded() ){
+            result = true;
+        }
+        return result;
     }
 
     public boolean isRegistered(){
@@ -167,5 +185,60 @@ public class AntennaeContext {
     public int getSavedAppVersion(){
         int savedAppVersion = getPreferences().getInt(Constants.ANTENNAE_APP_VERSION, -1000000);
         return savedAppVersion;
+    }
+
+
+    public void sendAppDetailsToServer() {
+        // get the ip address and port of the server from a config file
+
+        // the call the API to send the token
+    }
+
+    public void sendAppDetailsToServer(String host, int port, AppDetails appDetails){
+
+        String serverUrl = host + ":" + port + "";
+
+        try {
+
+            HttpPost post = new HttpPost(serverUrl);
+
+            post.setEntity(new StringEntity(appDetails.toJson()));
+            post.setHeader("Accept", "application/json");
+            post.setHeader("Content-type", "application/json");
+
+            DefaultHttpClient httpClient = new DefaultHttpClient();
+            HttpResponse response = httpClient.execute(post);
+
+            if( response != null ){
+                Log.d(Globals.TAG, "Http Server Response: " + response);
+            }
+
+            if(response.getStatusLine().getStatusCode() == 200 ){
+                // mark that the application details are sent to server
+                getPreferences().edit().putBoolean(Constants.SENT_APP_DETAILS_TO_SERVER, true);
+                getPreferences().edit().apply();
+            }else{
+                // mark, so, that app retries again to the send the details to the server
+                getPreferences().edit().putBoolean(Constants.SENT_APP_DETAILS_TO_SERVER, false);
+                getPreferences().edit().apply();
+            }
+
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public boolean isAppDetailsSentToServer(){
+        boolean result =false;
+
+        if ( getPreferences().getBoolean(Constants.SENT_APP_DETAILS_TO_SERVER, false)) {
+            result = true;
+        }
+
+        return result;
     }
 }

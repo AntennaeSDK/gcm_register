@@ -36,10 +36,10 @@ public class MyGcmIntentService extends IntentService {
     @Deprecated
     protected void onHandleIntent(Intent intent) {
         InstanceID instanceID = InstanceID.getInstance(this);
-        try {
-            String token = instanceID.getToken(Constants.PROJECT_ID, GoogleCloudMessaging.INSTANCE_ID_SCOPE, null);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            String token = instanceID.getToken(Constants.PROJECT_ID, GoogleCloudMessaging.INSTANCE_ID_SCOPE, null);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
     }
 }
