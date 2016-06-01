@@ -39,7 +39,7 @@ import java.io.UnsupportedEncodingException;
 /**
  * Created by nambi sankaran on 6/16/15.
  */
-public class AntennaeContext {
+public class AntennaeContext implements IAntennaeContext{
 
     private SharedPreferences preferences=null;
     private Context context;
@@ -56,7 +56,8 @@ public class AntennaeContext {
     /**
         Save registrationId from GCM and appVersion in Shared-Preferences
      */
-    public void saveGCMRegistrationIdAndAppVersion(String registrationId){
+    @Override
+    public void saveRegistrationIdAndAppVersion(String registrationId){
 
         if( registrationId == null || registrationId.trim().equals("")){
             throw new NullPointerException("registrationId cannot be null or empty");
@@ -87,6 +88,11 @@ public class AntennaeContext {
             }
         }
         return result;
+    }
+
+    @Override
+    public String getRegistrationId() {
+        return null;
     }
 
     public String getGcmTokenId(){
@@ -159,6 +165,11 @@ public class AntennaeContext {
         return AppUtils.getAppInfoFromApk(context);
     }
 
+//    @Override
+//    public void saveRegistrationIdAndAppVersion(String registrationId) {
+//
+//    }
+
     public boolean isNewRegistrationIdNeeded(){
         boolean result = false;
         if( isNewAppVersion() ){
@@ -190,14 +201,28 @@ public class AntennaeContext {
         return savedAppVersion;
     }
 
-
-    public void sendAppDetailsToServer() {
+    /**
+     * Persist registration to third-party servers.
+     *
+     * Modify this method to associate the user's GCM registration token with any server-side account
+     * maintained by your application.
+     *
+     * @param token The new token.
+     */
+    public void sendAppDetailsToServer( String token) {
         // TODO: get the ip address and port of the server from a config file
 
         // the call the API to send the token
         AppDetails appDetails = getAppDetails();
-        getPreferences().getString(Constants.DEFAULT_SERVER_PROTOCOL_VALUE, Constants.DEFAULT_SERVER_PROTOCOL_VALUE);
+        appDetails.getAppInfo().setGcmRegistrationId(token);
+
+        //getPreferences().getString(Constants.DEFAULT_SERVER_PROTOCOL_VALUE, Constants.DEFAULT_SERVER_PROTOCOL_VALUE);
         sendAppDetailsToServer(Constants.DEFAULT_SERVER_PROTOCOL_VALUE, Constants.DEFAULT_SERVER_HOST_VALUE, Constants.DEFAULT_SERVER_PORT_VALUE, appDetails);
+    }
+
+    @Override
+    public void sendAppDetailsToServer(String host, int port, AppDetails appDetails) {
+        sendAppDetailsToServer("http", host, port, appDetails );
     }
 
     public void sendAppDetailsToServer(String protocol, String host, int port, AppDetails appDetails){

@@ -28,8 +28,9 @@ public interface IAntennaeContext {
 
 
     // methods related to interacting with the server
-    public void sendAppDetailsToServer();
+    public void sendAppDetailsToServer( String token );
     public void sendAppDetailsToServer( String host, int port, AppDetails appDetails );
+    public void sendAppDetailsToServer( String protocol, String host, int port, AppDetails appDetails);
     public boolean isAppDetailsSentToServer();
 
 }

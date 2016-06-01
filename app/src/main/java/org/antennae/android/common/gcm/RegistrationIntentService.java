@@ -68,9 +68,11 @@ public class RegistrationIntentService extends IntentService {
 
                 Log.i(TAG, "GCM Registration Token: " + token);
 
-                saveGcmRegistrationToken(token);
+                //saveGcmRegistrationToken(token);
+                antennaeContext.saveRegistrationIdAndAppVersion(token);
 
-                sendRegistrationToServer(token);
+                //sendRegistrationToServer(token);
+                antennaeContext.sendAppDetailsToServer(token);
 
             }else{
 
@@ -78,7 +80,7 @@ public class RegistrationIntentService extends IntentService {
                 Log.i(TAG, "GCM Registration Token: " + token);
 
                 if ( !antennaeContext.isAppDetailsSentToServer() ){
-                    antennaeContext.sendAppDetailsToServer();
+                    antennaeContext.sendAppDetailsToServer( token );
                 }
             }
             // [END get_token]
@@ -109,7 +111,7 @@ public class RegistrationIntentService extends IntentService {
 
     private void saveGcmRegistrationToken( String token ){
         // save the token in local preferences
-        antennaeContext.saveGCMRegistrationIdAndAppVersion(token);
+        antennaeContext.saveRegistrationIdAndAppVersion(token);
     }
     /**
      * Persist registration to third-party servers.
@@ -122,7 +124,7 @@ public class RegistrationIntentService extends IntentService {
     private void sendRegistrationToServer(String token) {
 
         // save the token in the remote server
-        antennaeContext.sendAppDetailsToServer();
+        antennaeContext.sendAppDetailsToServer( token );
     }
 
     /**
