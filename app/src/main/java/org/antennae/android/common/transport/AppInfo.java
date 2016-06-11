@@ -15,6 +15,8 @@ public class AppInfo {
     private long firstInstallTime;
     private long lastUpdateTime;
 
+    private String userId;
+
     public String getGcmRegistrationId() {
         return gcmRegistrationId;
     }
@@ -71,6 +73,14 @@ public class AppInfo {
     public static AppInfo fromJson( String json ){
         Gson gson = new Gson();
         return gson.fromJson(json, AppInfo.class);
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
 }

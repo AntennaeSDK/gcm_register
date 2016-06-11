@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
@@ -15,9 +16,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.koushikdutta.async.ByteBufferList;
+import com.koushikdutta.async.DataEmitter;
+import com.koushikdutta.async.callback.DataCallback;
+import com.koushikdutta.async.http.AsyncHttpClient;
+import com.koushikdutta.async.http.WebSocket;
 
 import org.antennae.android.common.AntennaeContext;
 import org.antennae.android.common.Constants;
@@ -29,9 +36,15 @@ import org.antennae.notifyapp.events.EventManager;
 import org.antennae.notifyapp.model.Alert;
 import org.antennae.notifyapp.model.AlertSeverityEnum;
 import org.antennae.notifyapp.listeners.AlertReceivedListener;
+import org.java_websocket.client.WebSocketClient;
+import org.java_websocket.handshake.ServerHandshake;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 
 
@@ -46,6 +59,7 @@ public class MainActivity extends ActionBarActivity implements AlertReceivedList
 
     private BroadcastReceiver mRegistrationBroadcastReceiver;
     private boolean isReceiverRegistered;
+    private WebSocketClient mWebSocketClient;
 
     ListView lvMessages;
     private List<Alert> alerts = new ArrayList<Alert>();
@@ -63,10 +77,6 @@ public class MainActivity extends ActionBarActivity implements AlertReceivedList
         //register the listeners with the even manager
         EventManager eventManager = EventManager.getInstance();
         eventManager.registerAlertReceivedListener(this);
-
-//        context = getApplicationContext();
-//        SharedPreferences pref= context.getSharedPreferences( Constants.PREF_ANTENNAE , MODE_PRIVATE);
-
 
         mRegistrationBroadcastReceiver = new BroadcastReceiver() {
             @Override
@@ -108,15 +118,6 @@ public class MainActivity extends ActionBarActivity implements AlertReceivedList
             startService( intent );
         }
 
-        /*
-        GcmWrapper gcmwrapper = new GcmWrapper(context);
-        String registrationId = gcmwrapper.getGcmTokenId();
-
-        if( registrationId == null ){
-            gcmwrapper.registerWithGcmAsync();
-        }
-        */
-
         setContentView(R.layout.activity_main);
 
         lvMessages = (ListView) findViewById(R.id.lvMessages);
@@ -129,12 +130,15 @@ public class MainActivity extends ActionBarActivity implements AlertReceivedList
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 Intent i = new Intent(MainActivity.this, MessageDetailActivity.class);
-
                 i.putExtra(ALERT_PARAM, alerts.get(position));
 
                 startActivity(i);
             }
         });
+
+
+        //connectToWebSocket();
+        connectToWS();
     }
 
     private void populateAlerts() {
@@ -235,6 +239,86 @@ public class MainActivity extends ActionBarActivity implements AlertReceivedList
             LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
                     new IntentFilter(Constants.REGISTRATION_COMPLETE));
             isReceiverRegistered = true;
+        }
+    }
+
+    private void connectToWebSocket(){
+
+        URI uri;
+        try {
+            uri = new URI("ws://192.168.1.114:8080/ws");
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        mWebSocketClient = new WebSocketClient(uri) {
+
+            @Override
+            public void onOpen(ServerHandshake handShakeData) {
+                Log.i("Websocket", "Opened");
+                mWebSocketClient.send("Hello from " + Build.MANUFACTURER + " " + Build.MODEL);
+            }
+
+            @Override
+            public void onMessage(String message) {
+                final String msg = message;
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        TextView textView = (TextView)findViewById(R.id.tvMessage);
+                        textView.setText(textView.getText() + "\n" + msg);
+                    }
+                });
+            }
+
+            @Override
+            public void onClose(int code, String reason, boolean remote) {
+
+            }
+
+            @Override
+            public void onError(Exception ex) {
+
+            }
+        };
+
+        mWebSocketClient.connect();
+    }
+
+    private void connectToWS(){
+        Future<WebSocket> webSocketFuture = AsyncHttpClient.getDefaultInstance().websocket("ws://192.168.1.4:8080/ws", "my-protocol", new AsyncHttpClient.WebSocketConnectCallback() {
+            @Override
+            public void onCompleted(Exception ex, WebSocket webSocket) {
+                if (ex != null) {
+                    ex.printStackTrace();
+                    return;
+                }
+                webSocket.send("a string");
+                webSocket.send(new byte[10]);
+                webSocket.setStringCallback(new WebSocket.StringCallback() {
+                    public void onStringAvailable(String s) {
+                        System.out.println("I got a string: " + s);
+                    }
+                });
+                webSocket.setDataCallback(new DataCallback() {
+                    public void onDataAvailable(DataEmitter emitter, ByteBufferList byteBufferList) {
+                        System.out.println("I got some bytes!");
+                        // note that this data has been read
+                        byteBufferList.recycle();
+                    }
+                });
+            }
+        });
+
+        try {
+            WebSocket ws = webSocketFuture.get();
+            ws.send("Hello World");
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
         }
     }
 }
