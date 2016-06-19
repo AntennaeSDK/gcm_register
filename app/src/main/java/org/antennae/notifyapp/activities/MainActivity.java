@@ -295,7 +295,7 @@ public class MainActivity extends ActionBarActivity implements AlertReceivedList
                     return;
                 }
                 webSocket.send("a string");
-                webSocket.send(new byte[10]);
+                //webSocket.send(new byte[10]);
                 webSocket.setStringCallback(new WebSocket.StringCallback() {
                     public void onStringAvailable(String s) {
                         System.out.println("I got a string: " + s);
