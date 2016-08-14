@@ -1,4 +1,4 @@
-# Sample Android App
+# AntennaeSDK Reference Android Application
 
 This application uses the antennae client library to talk to AntennaeSDK server.
 
